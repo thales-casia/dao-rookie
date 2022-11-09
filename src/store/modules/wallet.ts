@@ -1,3 +1,4 @@
+import { abi, address } from "@/utils/contract/articles";
 import { ethers } from "ethers";
 import { defineStore } from 'pinia';
 
@@ -9,10 +10,40 @@ const provider = new ethers.providers.Web3Provider(window.ethereum);
 const useWallet = defineStore({
   id: 'wallet',
   state: () => ({
-    instance: {
-      signer: {}
-    },
-    list: [],
+    list: [
+      {
+        name:'article 0',
+        verify: false
+      },
+      {
+        name:'article 1',
+        verify: false
+      },
+      {
+        name:'article 2',
+        verify: false
+      },
+      {
+        name:'article 3',
+        verify: false
+      },
+      {
+        name:'article 4',
+        verify: false
+      },
+      {
+        name:'article 5',
+        verify: false
+      },
+      {
+        name:'article 6',
+        verify: false
+      },
+      {
+        name:'article 7',
+        verify: false
+      }
+    ],
     address: <string|null>null
   }),
   getters: {
@@ -24,6 +55,12 @@ const useWallet = defineStore({
         this.address = window.localStorage.getItem(KEY);
       }
       return this.address;
+    },
+    /**
+     * 文章审核列表
+     */
+    articles():any {
+      return this.list;
     }
   },
   actions: {
@@ -43,6 +80,22 @@ const useWallet = defineStore({
       this.list = [];
       this.address = '';
       window.localStorage.removeItem(KEY);
+    },
+    refreshArticle() {
+      const contract = new ethers.Contract(address, abi, provider.getSigner());
+      contract.getArticles().then((arr:string[]) => {
+        for(const key in arr) {
+          if(arr[key] !== '0x0000000000000000000000000000000000000000') {
+            this.list[key].verify = true;
+          }
+        }
+      });
+    },
+    verify(id:number) {
+      const contract = new ethers.Contract(address, abi, provider.getSigner());
+      contract.verify(id).then((res:any) => {
+        this.refreshArticle();
+      });
     }
   }
 });
