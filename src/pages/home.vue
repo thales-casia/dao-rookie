@@ -2,7 +2,8 @@
   <div class="home">
     <h1>杂志DAO</h1>
     <p>登录wallet发布文章</p>
-    <div>
+    <fieldset>
+      <legend>钱包</legend>
       <label v-if="account">
         <ul>
           <li>{{account}}</li>
@@ -10,15 +11,16 @@
         <button @click="onDisconnect">断开连接</button>
       </label>
       <label v-else><button @click="onConnect">链接钱包</button></label>
-    </div>
-    <div>
+    </fieldset>
+    <fieldset v-if="account">
+      <legend>文章列表</legend>
       <ul>
         <li v-for="item, key in articles">
           {{item.name}}
           <button @click="onVerify" :data-id="key" :disabled="item.verify">审核</button>
         </li>
       </ul>
-    </div>
+    </fieldset>
   </div>
 </template>
 <script setup lang="ts">

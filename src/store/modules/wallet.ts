@@ -69,15 +69,14 @@ const useWallet = defineStore({
      */
     connect() {
       provider?.send("eth_requestAccounts", []).then(res => {
-        this.list = res;
         this.address = res[0];
         window.localStorage.setItem(KEY, res[0]);
+        this.refreshArticle();
       }).catch(err => {
         console.log(err);
       });
     },
     disconnect() {
-      this.list = [];
       this.address = '';
       window.localStorage.removeItem(KEY);
     },
